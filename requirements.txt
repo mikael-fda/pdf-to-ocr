@@ -1,0 +1,5 @@
+redis==4.0.2
+rq==1.10.0
+
+# debug tool
+ipdb==0.13.4

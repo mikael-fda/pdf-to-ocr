@@ -1,0 +1,41 @@
+version: "3.8"
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/app/Dockerfile
+    depends_on:
+      - postgres
+      - ocr-pdf
+    entrypoint: /bin/bash
+    volumes:
+      - ./data/:/data
+  postgres:
+    image: postgres:14.1
+    environment:
+      HOSTNAME: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+    restart: always
+    volumes:
+     - postgres-data:/var/lib/postgresql/data:rw
+  redis:
+    image: redis:6.2.6
+    restart: always
+    volumes:
+      - redis-data:/data
+  ocr-pdf:
+    # image: geekinutah/python-rq-worker
+    build:
+      context: .
+      dockerfile: docker/ocr-pdf/Dockerfile
+    depends_on:
+      - redis
+    restart: always
+    volumes:
+      - ./data/:/data
+
+volumes:
+  postgres-data:
+  redis-data:
