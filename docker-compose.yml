@@ -18,6 +18,7 @@ services:
     depends_on:
       - postgres
       - ocr-worker
+      - redis
     volumes:
       - ./data/original:/data/original/
       - ./data/ocrised:/data/ocrised/

@@ -6,6 +6,6 @@ RUN pip3 install -r requirements.txt
 
 WORKDIR /app
 
-COPY app/ /app
+COPY app/ /app/
 
 ENTRYPOINT ["/bin/bash"]
