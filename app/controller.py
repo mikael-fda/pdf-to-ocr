@@ -5,9 +5,9 @@ import time, random, traceback, os
 from flask import request, Response, send_file
 from flask_restx import Resource, reqparse
 
-from server import server, base_url, check_identity
+from server import server, base_url, check_identity, redis_pdf_to_ocr
 from common import Globals
-from pdf_to_ocr import pdf_to_ocr
+from pdf_to_ocr import get_data
 
 from werkzeug.datastructures import FileStorage
 
@@ -33,9 +33,11 @@ class SendPDF(Resource):
     def post(self, username):
         #if password != confirmation:
         #    raise Exception("Error verification passwords")
-        dirPath = Globals.INPUT_FOLDER + username
-        if not os.path.exists(dirPath):
-            os.makedirs(dirPath)
+        dirPathIn = Globals.INPUT_FOLDER + username
+        dirPathInOut = Globals.OUTPUT_FOLDER + username
+        if not os.path.exists(dirPathIn) or not os.path.exists(dirPathInOut) :
+            os.makedirs(dirPathIn)
+            os.makedirs(dirPathInOut)
         return "Account created"
 
 @nsPDF.route("/<string:username>/all")
@@ -56,7 +58,6 @@ class checkPDF(Resource):
         if not os.path.exists(dirPath):
             raise Exception("Error, you don't have any account")
         
-        pdf_to_ocr(username, dirPath)
         return send_file(dirPath, as_attachment=True)
 
 @nsPDF.route("/upload/<string:username>")
@@ -75,6 +76,7 @@ class SendPDF(Resource):
         
         args = file_upload.parse_args()
         file = args['file']
-        file.save(dirPath + "/" + file.filename)
-
+        filepath = dirPath + "/" + file.filename
+        file.save(filepath)
+        redis_pdf_to_ocr(username, filepath)
         return "file save ok"

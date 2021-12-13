@@ -14,7 +14,6 @@ from controller import *
 redis = Redis(host="redis")
 queue = Queue(name="ocr", connection=redis)
 
-
 names = "Marc Jack Alfred".split()
 words = "je suis une fussé et pas un mot".split()
 

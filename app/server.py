@@ -2,7 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import os
-
+from redis import Redis
+from rq import Queue
+from pdf_to_ocr import pdf_to_ocr
 from flask import Flask, Blueprint, url_for, redirect
 from flask_restx import Api
 
@@ -39,6 +41,11 @@ class Server:
         self.app.run()
 
 server = Server()
+redis = Redis(host="redis")
+queue = Queue(name="ocr", connection=redis)
+
+def redis_pdf_to_ocr(user_id, input_file):
+    queue.enqueue(pdf_to_ocr, args=(user_id, input_file, "-l fra"))
 
 @server.app.route('/status')
 def status():

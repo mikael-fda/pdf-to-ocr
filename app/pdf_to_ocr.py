@@ -6,13 +6,14 @@ from common import Globals
 
 
 OCR_COMMANDS = (
-    "ocrmypdf", "-q", "-j 1", "--skip-text", "--output-type pdf"
+    "ocrmypdf", "-j 1", "--skip-text", "--output-type pdf"
 )
 
 
 def get_data(user_id):
     conn = None
     sql = """SELECT path FROM Files WHERE user_id = %d;"""
+    data = []
     try:
         conn = psycopg2.connect(
             host=os.environ['HOSTNAME'],
@@ -27,10 +28,12 @@ def get_data(user_id):
         cur.execute(sql, (user_id))
         # commit change
         conn.commit()
+
+        # get Data
+        data = cur.fetchall()
+
         # close communcation
         cur.close()
-        data = cur.fetchall()
-        
     except Exception as e:
         print(e)
     finally:
@@ -68,8 +71,10 @@ def insert_data(user_id, output_file, status):
 
 def pdf_to_ocr(user_id, input_file, lang="-l fra"):
     output_file = input_file.replace(Globals.INPUT_FOLDER, Globals.OUTPUT_FOLDER)
-    
+
     cmd = list(OCR_COMMANDS) + [lang, input_file, output_file]
+    print(cmd)
+
     return_status = None
     try:
         subprocess.check_call(cmd)
@@ -77,4 +82,3 @@ def pdf_to_ocr(user_id, input_file, lang="-l fra"):
     except subprocess.CalledProcessError as e:
         return_status = e.returncode
     insert_data(user_id, output_file, return_status)
-    return output_file
