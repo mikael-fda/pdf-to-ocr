@@ -8,6 +8,7 @@ PASS = os.environ['POSTGRES_PASSWORD']
 
 def make_select(sql_cmd, parameters=None):
     """ query parts from the parts table """
+    create_tables()
     conn = None
     data = None
     try:
@@ -31,6 +32,7 @@ def make_select(sql_cmd, parameters=None):
 
 def make_insert(sql_cmd, parameters=None):
     """ insert a new vendor into the vendors table """
+    create_tables()
     conn = None
     id = None
     try:
@@ -41,22 +43,21 @@ def make_insert(sql_cmd, parameters=None):
             password=PASS
         )        
         cur = conn.cursor()
-        cur.execute(sql_cmd, (parameters,))
+        cur.execute(sql_cmd, parameters,)
         id = cur.fetchone()[0]
         conn.commit()
         cur.close()
     except (Exception, psycopg2.DatabaseError) as error:
-        print(error)
+        raise error
     finally:
         if conn is not None:
             conn.close()
-
     return id
 
 def insert_file(user_name, input_file, output_file, return_status):
     commands = (
         """INSERT INTO file(user_name, input_file, output_file, return_status) 
-            VALUES(%s, %s, %s, %d) RETURNING file_id;
+            VALUES(%s, %s, %s, %s) RETURNING file_id;
         """
     )
     parameters = (user_name, input_file, output_file, return_status)

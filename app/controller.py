@@ -60,7 +60,7 @@ class checkPDF(Resource):
     def get(self, user_name, fileName):
         #TODO recup chemin via bd
         #check_identity()
-        dirPath = Globals.INPUT_FOLDER+ user_name + "/" + fileName
+        dirPath = Globals.OUTPUT_FOLDER+ user_name + "/" + fileName
         if not os.path.exists(dirPath):
             raise Exception("Error, you don't have any account")
         
