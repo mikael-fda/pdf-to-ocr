@@ -48,6 +48,7 @@ def status():
 def index():
     return redirect(base_url)
 
+# check identity parameters
 def check_identity():
     if not "username" in request.headers or not "password" in request.headers:
         raise Exception("You are not connected")

@@ -7,6 +7,7 @@ from flask_restx import Resource, reqparse
 
 from server import server, base_url, check_identity
 from common import Globals
+from pdf_to_ocr import pdf_to_ocr
 
 from werkzeug.datastructures import FileStorage
 
@@ -41,11 +42,11 @@ class SendPDF(Resource):
 class getAllPDF(Resource):
     # get All files path
     def get(self, username):
-        #check_identity()
         dirPath = Globals.INPUT_FOLDER+ username
         if not os.path.isdir(dirPath):
-            raise Exception("Error no folder")
-        return [ x for x in os.listdir(dirPath)]
+            raise Exception("Error, you don't have any account")
+        return get_data(username)
+        #return [ x for x in os.listdir(dirPath)]
 
 @nsPDF.route("/upload/<string:username>/<string:fileName>")
 class checkPDF(Resource):
@@ -53,8 +54,9 @@ class checkPDF(Resource):
         #check_identity()
         dirPath = Globals.INPUT_FOLDER+ username + "/" + fileName
         if not os.path.exists(dirPath):
-            raise Exception("Error no folder")
-
+            raise Exception("Error, you don't have any account")
+        
+        pdf_to_ocr(username, dirPath)
         return send_file(dirPath, as_attachment=True)
 
 @nsPDF.route("/upload/<string:username>")
@@ -68,6 +70,8 @@ class SendPDF(Resource):
         """
         #check_identity()
         dirPath = Globals.INPUT_FOLDER + username
+        if not os.path.exists(dirPath):
+            raise Exception("Error, you don't have any account")
         
         args = file_upload.parse_args()
         file = args['file']
