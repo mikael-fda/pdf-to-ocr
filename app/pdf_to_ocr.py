@@ -5,9 +5,7 @@ import subprocess
 from common import Globals
 
 
-OCR_COMMANDS = (
-    "ocrmypdf", "-j 1", "--skip-text", "--output-type pdf"
-)
+OCR_COMMANDS = "ocrmypdf -j 1 --skip-text --output-type pdf".split()
 
 
 def get_data(user_id):
@@ -61,8 +59,6 @@ def insert_data(user_id, output_file, status):
         conn.commit()
         # close communcation
         cur.close()
-        
-        
     except Exception as e:
         print(e)
     finally:
@@ -72,8 +68,7 @@ def insert_data(user_id, output_file, status):
 def pdf_to_ocr(user_id, input_file, lang="-l fra"):
     output_file = input_file.replace(Globals.INPUT_FOLDER, Globals.OUTPUT_FOLDER)
 
-    cmd = list(OCR_COMMANDS) + [lang, input_file, output_file]
-    print(cmd)
+    cmd = OCR_COMMANDS +  lang.split() + [input_file, output_file]
 
     return_status = None
     try:
@@ -81,4 +76,4 @@ def pdf_to_ocr(user_id, input_file, lang="-l fra"):
         return_status = 0
     except subprocess.CalledProcessError as e:
         return_status = e.returncode
-    insert_data(user_id, output_file, return_status)
+    # insert_data(user_id, output_file, return_status)
