@@ -44,8 +44,8 @@ server = Server()
 redis = Redis(host="redis")
 queue = Queue(name="ocr", connection=redis)
 
-def redis_pdf_to_ocr(user_id, input_file):
-    queue.enqueue(pdf_to_ocr, args=(user_id, input_file, "-l fra"))
+def redis_pdf_to_ocr(user_name, input_file):
+    queue.enqueue(pdf_to_ocr, args=(user_name, input_file, "-l fra"))
 
 @server.app.route('/status')
 def status():
