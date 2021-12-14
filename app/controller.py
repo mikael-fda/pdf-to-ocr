@@ -55,7 +55,12 @@ class GetUser(Resource):
         """
         See your account informations
         """
-        return get_user(user_name)
+        user = get_user(user_name)
+        data = {
+            "user_name": user[0][0],
+            "user_mail": user[0][1]
+        }
+        return data
 
 @nsPDF.route("/<string:user_name>/_all")
 class getAllPDF(Resource):
