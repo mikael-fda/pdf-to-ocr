@@ -6,3 +6,6 @@ class DatabaseError(Exception):
 
 class AccountError(Exception):
     pass
+
+class ObjectBadFormat(Exception):
+    pass

@@ -11,7 +11,7 @@ from common import Globals
 from sql import get_user, get_file, insert_file, insert_user
 from redis_queue import redis_pdf_to_ocr
 
-from errors import ObjectNotFound, AccountError
+from errors import ObjectNotFound, AccountError, ObjectBadFormat
 from werkzeug.datastructures import FileStorage
 import logging
 
@@ -98,7 +98,8 @@ class SendPDF(Resource):
         
         args = file_upload.parse_args()
         file = args['file']
-        logging.info(file.content_type)
+        if file.content_type != "application/pdf":
+            raise ObjectBadFormat("You only can upload .pdf files")
         file_path = dirPath + "/" + file.filename
         file.save(file_path)
 

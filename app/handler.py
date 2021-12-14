@@ -16,7 +16,7 @@ def handle_exception(e):
 
 @app.errorhandler(ObjectNotFound)
 def handle_not_found(e):
-    code = 400
+    code = 404
     msg = {
         "error": {
             "message": str(e),
@@ -26,9 +26,10 @@ def handle_not_found(e):
     }
     return msg, code
 
+@app.errorhandler(ObjectBadFormat)
 @app.errorhandler(DatabaseError)
 def handle_not_found(e):
-    code = 401
+    code = 400
     msg = {
         "error": {
             "message": str(e),
