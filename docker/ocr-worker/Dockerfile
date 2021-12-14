@@ -7,6 +7,6 @@ RUN apt update && \
     pip3 install -r requirements.txt 
 
 WORKDIR /app
-COPY app/sql.py app/pdf_to_ocr.py app/common.py /app/
+COPY app/errors.py app/sql.py app/pdf_to_ocr.py app/common.py /app/
 
 ENTRYPOINT ["python3", "-m", "rq.cli", "worker", "--url", "redis://redis", "ocr"]

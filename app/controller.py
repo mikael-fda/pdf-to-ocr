@@ -8,7 +8,7 @@ from flask_restx import Resource, reqparse
 from server import server, base_url, check_identity
 from common import Globals
 from sql import get_user, get_file, insert_file, insert_user
-from pdf_to_ocr import redis_pdf_to_ocr
+from redis_queue import redis_pdf_to_ocr
 
 from errors import ObjectNotFound, AccountError
 from werkzeug.datastructures import FileStorage
