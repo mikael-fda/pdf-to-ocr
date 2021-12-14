@@ -7,8 +7,9 @@ from flask_restx import Resource, reqparse
 
 from server import server, base_url, check_identity, redis_pdf_to_ocr
 from common import Globals
-from sql import *
+from sql import get_user, get_file
 
+from erros import ObjectNotFound, AccountError
 from werkzeug.datastructures import FileStorage
 
 file_upload = reqparse.RequestParser()
@@ -28,41 +29,56 @@ nsPDF = api.namespace(
 
 @nsAccount.route("/<string:user_name>/<string:user_mail>")
 class CreateUser(Resource):
-    # create account
+    
+    # Create account
     def post(self, user_name, user_mail):
-        #if password != confirmation:
-        #    raise Exception("Error verification passwords")
+        """
+        Create your account
+        """
         dirPathIn = Globals.INPUT_FOLDER + user_name
         dirPathInOut = Globals.OUTPUT_FOLDER + user_name
-        id_user = insert_user(user_name, user_mail)
+        db_user_name = insert_user(user_name, user_mail)
         if not os.path.exists(dirPathIn) or not os.path.exists(dirPathInOut) :
             os.makedirs(dirPathIn)
             os.makedirs(dirPathInOut)
-        return { "Creation": "Sucess", "user_name" : id_user}
+        else:
+            raise AccountError("Your Account already exist")
+        return { "Creation": "Sucess", "user_name" : user_db_user_namename}
 
 @nsAccount.route("/<string:user_name>")
 class GetUser(Resource):
     # list account
     def get(self, user_name):
+        """
+        See your account informations
+        """
         return get_user(user_name)
 
-@nsPDF.route("/<string:user_name>/all")
+@nsPDF.route("/<string:user_name>/_all")
 class getAllPDF(Resource):
     # get All files path
     def get(self, user_name):
-        dirPath = Globals.INPUT_FOLDER + user_name
-        if not os.path.isdir(dirPath):
-            raise Exception("Error, you don't have any account")
+        """
+        See all of your files ready to download
+        """
+        user = get_user(user_name)
+        #dirPath = Globals.INPUT_FOLDER + user_name
         return get_file(user_name)
 
-@nsPDF.route("/download/<string:user_name>/<string:fileName>")
+
+@nsPDF.route("/download/<string:user_name>/<string:file_name>")
 class checkPDF(Resource):
-    def get(self, user_name, fileName):
-        #TODO recup chemin via bd
-        #check_identity()
-        dirPath = Globals.OUTPUT_FOLDER+ user_name + "/" + fileName
+    def get(self, user_name, file_name):
+        """
+        Download one of your files
+        """
+        user = get_user(user_name)
+        print(user)
+        files = get_file(user_name)
+        print(files)
+        dirPath = Globals.OUTPUT_FOLDER + user_name + "/" + file_name
         if not os.path.exists(dirPath):
-            raise Exception("Error, you don't have any account")
+            raise ObjectNotFound("Error during your files transformation, please reupload your .pdf file")
         
         return send_file(dirPath, as_attachment=True)
 
@@ -76,12 +92,14 @@ class SendPDF(Resource):
         Upload your pdf
         """
         dirPath = Globals.INPUT_FOLDER + user_name
-        if not os.path.exists(dirPath):
-            raise Exception("Error, you don't have any account")
+        user = get_user(user_name)
         
         args = file_upload.parse_args()
         file = args['file']
-        filepath = dirPath + "/" + file.filename
-        file.save(filepath)
-        redis_pdf_to_ocr(user_name, filepath)
-        return "file save ok"
+        
+        file_path = dirPath + "/" + file.filename
+        file.save(file_path)
+
+        redis_pdf_to_ocr(user_name, file_path)
+
+        return "File save Success !", 200

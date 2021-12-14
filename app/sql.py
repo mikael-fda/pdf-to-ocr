@@ -1,5 +1,6 @@
 import psycopg2
 import os
+from errors import DatabaseError, ObjectNotFound
 
 HOST = os.environ['HOSTNAME']
 DB = os.environ['POSTGRES_DB']
@@ -24,10 +25,12 @@ def make_select(sql_cmd, parameters=None):
         data =  [ row for row in rows]
         cur.close()
     except (Exception, psycopg2.DatabaseError) as error:
-        print(error)
+        raise DatabaseError("Error during SELECT in database : " + str(error))
     finally:
         if conn is not None:
             conn.close()
+    if not data:
+        raise ObjectNotFound("No data corresponding in the database")
     return data
 
 def make_insert(sql_cmd, parameters=None):
@@ -48,7 +51,7 @@ def make_insert(sql_cmd, parameters=None):
         conn.commit()
         cur.close()
     except (Exception, psycopg2.DatabaseError) as error:
-        raise error
+        raise DatabaseError("Error during INSERT in database : " + str(error))
     finally:
         if conn is not None:
             conn.close()
@@ -123,11 +126,7 @@ def create_tables():
         conn.commit()
         cur.close()
     except (Exception, psycopg2.DatabaseError) as error:
-        raise Exception(error)
-        #if "exist" in error:
-        #    print(error)
-        #else:
-        #    raise Exception("Error creation DB")
+        raise DatabaseError("Error during TABLE CREATION : " + str(error))
     finally:
         if conn is not None:
             conn.close()
