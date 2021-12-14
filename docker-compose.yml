@@ -49,8 +49,6 @@ services:
       dockerfile: docker/ocr-worker/Dockerfile
     environment:
       <<: *env
-    depends_on:
-      - redis
     restart: always
     volumes:
       - ./data/original:/data/original/
