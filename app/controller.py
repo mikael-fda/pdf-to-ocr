@@ -5,6 +5,7 @@ import time, random, traceback, os
 from flask import request, Response, send_file
 from flask_restx import Resource, reqparse
 
+from handler import *
 from server import server, base_url, check_identity
 from common import Globals
 from sql import get_user, get_file, insert_file, insert_user
@@ -74,9 +75,7 @@ class checkPDF(Resource):
         Download one of your files
         """
         user = get_user(user_name)
-        print(user)
         files = get_file(user_name)
-        print(files)
         dirPath = Globals.OUTPUT_FOLDER + user_name + "/" + file_name
         if not os.path.exists(dirPath):
             raise ObjectNotFound("Error during your files transformation, please reupload your .pdf file")
