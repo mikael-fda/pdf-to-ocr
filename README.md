@@ -1,6 +1,9 @@
 # Scan-to-pdf
 
-Maintainers:
+## Description 
+Transform your Scans to searchable .pdf files
+
+## Maintainers
 - Mikaël Ferreira de Almeida
 - Jérémie Henrion
 
@@ -8,12 +11,14 @@ Maintainers:
 - Build app : `docker-compose build`
 - Run server : `docker-compose up [-d]`
 
-## Access to Web Interface (app_1)
-[http://127.0.0.1:5000/project/scan_to_pdf/](http://127.0.0.1:5000/project/scan_to_pdf/)
+## Access to Web Interface
+This Interface is generate by flask and flask-Restx packages
+
+URL : [http://127.0.0.1:5000/project/scan_to_pdf/](http://127.0.0.1:5000/project/scan_to_pdf/)
 
 ### Create you Account
 ```sh
-curl -X POST "http://127.0.0.1:5000/project/scan_to_pdf/account/{{YOU PSEUDO}}/{{YOUR EMAIL}}" -H "accept: application/json"
+curl -X POST "http://127.0.0.1:5000/project/scan_to_pdf/account/{{YOUR PSEUDO}}/{{YOUR EMAIL}}" -H "accept: application/json"
 ```
 
 ### Get your account informations
@@ -32,5 +37,5 @@ curl -X GET "http://127.0.0.1:5000/project/scan_to_pdf/PDF/{{YOUR PSEUDO}}/_all"
 ```
 ### Download your transformed Files
 ```sh
-curl -X GET "http://127.0.0.1:5000/project/scan_to_pdf/PDF/download/{{YOUR PSEUDO}}/{{FILE TO DOWNLOAD}}" -H "accept: application/json"
+curl -X GET "http://172.19.0.6:5000/project/scan_to_pdf/PDF/download//{{YOUR PSEUDO}}/{{FILE TO DOWNLOAD}}" -H "accept: application/json" --output {{OUTPUT FILE NAME}}
 ```
