@@ -24,7 +24,7 @@ def make_select(sql_cmd, parameters=None):
         rows = cur.fetchall()
         data =  [ row for row in rows]
         cur.close()
-    except (Exception, psycopg2.DatabaseError) as error:
+    except (Exception) as error:
         raise DatabaseError("Error during SELECT in database : " + str(error))
     finally:
         if conn is not None:
@@ -50,7 +50,7 @@ def make_insert(sql_cmd, parameters=None):
         id = cur.fetchone()[0]
         conn.commit()
         cur.close()
-    except (Exception, psycopg2.DatabaseError) as error:
+    except (Exception) as error:
         raise DatabaseError("Error during INSERT in database : " + str(error))
     finally:
         if conn is not None:

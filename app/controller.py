@@ -5,11 +5,12 @@ import time, random, traceback, os
 from flask import request, Response, send_file
 from flask_restx import Resource, reqparse
 
-from server import server, base_url, check_identity, redis_pdf_to_ocr
+from server import server, base_url, check_identity
 from common import Globals
-from sql import get_user, get_file
+from sql import get_user, get_file, insert_file, insert_user
+from pdf_to_ocr import redis_pdf_to_ocr
 
-from erros import ObjectNotFound, AccountError
+from errors import ObjectNotFound, AccountError
 from werkzeug.datastructures import FileStorage
 
 file_upload = reqparse.RequestParser()
@@ -96,7 +97,7 @@ class SendPDF(Resource):
         
         args = file_upload.parse_args()
         file = args['file']
-        
+        print(file.content_type)
         file_path = dirPath + "/" + file.filename
         file.save(file_path)
 
