@@ -13,6 +13,7 @@ from redis_queue import redis_pdf_to_ocr
 
 from errors import ObjectNotFound, AccountError
 from werkzeug.datastructures import FileStorage
+import logging
 
 file_upload = reqparse.RequestParser()
 file_upload.add_argument('file', location='files',type=FileStorage, required=True)
@@ -65,8 +66,9 @@ class getAllPDF(Resource):
         """
         user = get_user(user_name)
         files = get_file(user_name)
-        return [x[3] for x in files]
-
+        files = [x[3] for x in files]
+        data = list(set(files))
+        return [x.split("/")[-1] for x in data]
 
 @nsPDF.route("/download/<string:user_name>/<string:file_name>")
 class checkPDF(Resource):
@@ -96,7 +98,7 @@ class SendPDF(Resource):
         
         args = file_upload.parse_args()
         file = args['file']
-        print(file.content_type)
+        logging.info(file.content_type)
         file_path = dirPath + "/" + file.filename
         file.save(file_path)
 

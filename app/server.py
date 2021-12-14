@@ -5,18 +5,19 @@ import os
 from flask import Flask, Blueprint, url_for, redirect
 from flask_restx import Api
 
-base_url = "/project/pfd_to_odt"
+base_url = "/project/scan_to_pdf"
 
 class Server:
 
-    authorizations = {
-        "apikey": {
-            "type": "username",
-            "in": "header",
-            "name": "X-c4token",
-            "description": "Token of your tenant_id"
-        }
-    }
+    # Code for authentification ABORDED
+    # authorizations = {
+    #     "apikey": {
+    #         "type": "username",
+    #         "in": "header",
+    #         "name": "X-c4token",
+    #         "description": "Token of your tenant_id"
+    #     }
+    # }
 
     def __init__(self):
         self.app = Flask(__name__)
@@ -29,7 +30,7 @@ class Server:
             title='Project PDF to OCR',
             version='1.0',
             description='Change your PDF files to OCR files',
-            authorizations=self.authorizations,
+            authorizations=None, #self.authorizations,
             security='apikey'
         )
         self.app.register_blueprint(blueprint)

@@ -4,7 +4,15 @@ app = server.app
 
 @app.errorhandler(Exception)
 def handle_exception(e):
-    return 'Internal Error', 500
+    code = 500
+    msg = {
+        "error": {
+            "message": str(e),
+            "type": e.__class__.__name__,
+            "code": code
+        }
+    }
+    return msg, code
 
 @app.errorhandler(ObjectNotFound)
 def handle_not_found(e):
