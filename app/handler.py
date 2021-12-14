@@ -1,5 +1,5 @@
 from server import server
-from errors import ObjectNotFound, DatabaseError, AccountError
+from errors import *
 app = server.app
 
 @app.errorhandler(Exception)
