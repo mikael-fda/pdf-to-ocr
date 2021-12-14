@@ -27,9 +27,9 @@ class Server:
         blueprint = Blueprint('api', __name__, url_prefix=base_url)
         self.api = Api(
             app=blueprint,
-            title='Project PDF to OCR',
+            title='Project SCAN to PDF',
             version='1.0',
-            description='Change your PDF files to OCR files',
+            description='Change your Scan to PDF files',
             authorizations=None, #self.authorizations,
             security='apikey'
         )
