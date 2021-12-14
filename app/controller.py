@@ -98,8 +98,9 @@ class SendPDF(Resource):
         
         args = file_upload.parse_args()
         file = args['file']
+        
         if file.content_type not in ["application/pdf", "image/png", "image/jpeg"]:
-            raise ObjectBadFormat("You only can upload .pdf files")
+            raise ObjectBadFormat("You only can upload .pdf, .png and .jpeg files")
         file_path = dirPath + "/" + file.filename
         file.save(file_path)
 
