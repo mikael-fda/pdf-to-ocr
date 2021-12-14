@@ -16,6 +16,7 @@ services:
     build:
       context: .
       dockerfile: docker/app/Dockerfile
+    image: pdf_app:1.0
     environment:
       <<: *env
     depends_on:
@@ -47,6 +48,7 @@ services:
     build:
       context: .
       dockerfile: docker/ocr-worker/Dockerfile
+    image: ocr_worker:1.0
     environment:
       <<: *env
     restart: always
