@@ -6,7 +6,7 @@ from common import Globals
 from redis import Redis
 from rq import Queue
 
-OCR_COMMANDS = "ocrmypdf -j 1 --skip-text --output-type pdf".split()
+OCR_COMMANDS = "ocrmypdf -q -j 1 --skip-text --output-type pdf".split()
 
 
 def pdf_to_ocr(user_name, input_file, lang="-l fra"):
