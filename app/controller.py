@@ -44,7 +44,7 @@ class CreateUser(Resource):
             os.makedirs(dirPathInOut)
         else:
             raise AccountError("Your Account already exist")
-        return { "Creation": "Sucess", "user_name" : user_db_user_namename}
+        return { "Creation": "Sucess", "user_name" : db_user_name}
 
 @nsAccount.route("/<string:user_name>")
 class GetUser(Resource):
@@ -63,8 +63,8 @@ class getAllPDF(Resource):
         See all of your files ready to download
         """
         user = get_user(user_name)
-        #dirPath = Globals.INPUT_FOLDER + user_name
-        return get_file(user_name)
+        files = get_file(user_name)
+        return [x[3] for x in files]
 
 
 @nsPDF.route("/download/<string:user_name>/<string:file_name>")
