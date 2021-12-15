@@ -111,4 +111,4 @@ class SendPDF(Resource):
 
         redis_pdf_to_ocr(user_name, file_path)
 
-        return "File save Success !", 200
+        return {"File" : file_name, "Status": "Saved Success"}, 200
