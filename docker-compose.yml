@@ -7,10 +7,6 @@ x-env-vars: &env
   - POSTGRES_DB: postgres
   - FLASK_DEBUG: 1
 
-x-data-volumes: &data-volumes
-  - ./data/original:/data/original/
-  - ./data/ocrised:/data/ocrised/
-
 services:
   app:
     build:
@@ -44,7 +40,6 @@ services:
       # redis data
       - ./data/redis-data:/data
   ocr-worker:
-    # image: geekinutah/python-rq-worker
     build:
       context: .
       dockerfile: docker/ocr-worker/Dockerfile
