@@ -105,10 +105,12 @@ class SendPDF(Resource):
         file = args['file']
         
         if file.content_type not in ["application/pdf", "image/png", "image/jpeg"]:
-            raise ObjectBadFormat("You only can upload .pdf, .png and .jpeg files")
+            ext = file.filename.split('.')[-1]
+            raise ObjectBadFormat(f"You only can upload .pdf, .png and .jpeg files, currently got .{ext}")
+    
         file_path = dirPath + "/" + file.filename
         file.save(file_path)
 
         redis_pdf_to_ocr(user_name, file_path)
 
-        return {"File" : file_name, "Status": "Saved Success"}, 200
+        return {"file" : file.filename, "status": "Saved Success"}, 200
