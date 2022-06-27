@@ -1,0 +1,55 @@
+name: manuel-workflow
+on:
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'
+        required: true
+        default: 'warning' 
+        type: choice
+        options:
+        - info
+        - warning
+        - debug 
+      print_tags:
+        description: 'True to print to STDOUT'
+        required: true 
+        type: boolean 
+      tags:
+        description: 'Test scenario tags'
+        required: true 
+        type: string
+      environment:
+        description: 'Environment to run tests against'
+        type: environment
+        required: true 
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '14'
+      - run: npm install -g bats
+      - run: bats -v
+  tests:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '14'
+      - run: npm install -g bats
+      - run: bats -v  
+  deploy:
+    runs-on: ubuntu-latest
+    needs: tests
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '14'
+      - run: npm install -g bats
+      - run: bats -v
